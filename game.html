@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mafia Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .game-container {
+            text-align: center;
+        }
+        .player {
+            width: 100px;
+            height: 100px;
+            background: url('player.png') no-repeat center center;
+            background-size: contain;
+            margin: 10px;
+            display: inline-block;
+        }
+        .player.alive {
+            opacity: 1;
+        }
+        .player.dead {
+            opacity: 0.5;
+        }
+        .info {
+            margin-top: 20px;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #444;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div id="players">
+            <div class="player" id="player1"></div>
+            <div class="player" id="player2"></div>
+            <div class="player" id="player3"></div>
+            <div class="player" id="player4"></div>
+        </div>
+        <div class="info" id="info">Игра начинается...</div>
+        <button class="button" id="nextStepButton">Следующий шаг</button>
+    </div>
+
+    <script>
+        let players = ["player1", "player2", "player3", "player4"];
+        let killer = players[Math.floor(Math.random() * players.length)];
+        let witness;
+        do {
+            witness = players[Math.floor(Math.random() * players.length)];
+        } while (witness === killer);
+
+        document.getElementById('info').innerText = "Игра началась! Маньяк и свидетель выбраны.";
+
+        document.getElementById('nextStepButton').addEventListener('click', function() {
+            if (players.length > 2) {
+                let victim = players[Math.floor(Math.random() * players.length)];
+                while (victim === killer || victim === witness) {
+                    victim = players[Math.floor(Math.random() * players.length)];
+                }
+                document.getElementById(victim).classList.add('dead');
+                players = players.filter(player => player !== victim);
+                document.getElementById('info').innerText = `${victim} был убит! Осталось ${players.length - 1} игроков.`;
+
+                if (players.length <= 2) {
+                    document.getElementById('info').innerText += " Игра заканчивается!";
+                    if (players.includes(witness)) {
+                        document.getElementById('info').innerText += " Свидетель победил!";
+                    } else {
+                        document.getElementById('info').innerText += " Маньяк победил!";
+                    }
+                    document.getElementById('nextStepButton').disabled = true;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
