@@ -140,19 +140,18 @@
         }
 
         document.getElementById('killButton').addEventListener('click', function() {
-            document.getElementById('players').childNodes.forEach(player => {
-                player.addEventListener('click', function() {
-                    if (player.id !== "Islom") {
-                        if (player.id === killer) {
-                            document.getElementById('info').innerText = `Вы убили ${killer}. Поздравляем, вы выиграли!`;
-                            showPopup();
-                        } else {
-                            document.getElementById('info').innerText = `Вы убили ${player.id}. К сожалению, это был не маньяк. Вы проиграли.`;
-                            showPopup();
-                        }
-                    }
-                });
-            });
+            let killed = document.querySelector('.player.selected');
+            if (!killed) {
+                alert('Выберите игрока для убийства!');
+                return;
+            }
+
+            if (killed.id === killer) {
+                document.getElementById('info').innerText = `Вы убили ${killer}. Поздравляем, вы выиграли как маньяк!`;
+            } else {
+                document.getElementById('info').innerText = `Вы убили ${killed.id}. К сожалению, это был не маньяк. Вы проиграли.`;
+            }
+            showPopup();
         });
 
         document.getElementById('nextStepButton').addEventListener('click', function() {
@@ -173,17 +172,6 @@
         });
 
         function showPopup() {
-            let message;
-            if (youAreWitness && players.includes("Islom")) {
-                message = "Вы победили как Киллер!";
-            } else if (youAreKiller && players.includes("Islom")) {
-                message = "Вы победили как маньяк!";
-            } else if (players.includes(witness)) {
-                message = "Киллер победил!";
-            } else {
-                message = "Маньяк победил!";
-            }
-            document.getElementById('popup-message').innerText = message;
             document.getElementById('popup').style.display = 'block';
         }
 
@@ -194,6 +182,17 @@
         function goBack() {
             window.location.href = 'index.html';
         }
+
+        document.getElementById('players').addEventListener('click', function(event) {
+            let target = event.target.closest('.player');
+            if (!target || !document.getElementById('killButton').style.display) {
+                return;
+            }
+            document.querySelectorAll('.player').forEach(player => {
+                player.classList.remove('selected');
+            });
+            target.classList.add('selected');
+        });
     </script>
 </body>
 </html>
