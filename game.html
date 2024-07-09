@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,7 +96,9 @@
             <div class="player" id="Firdaus"><span>Фирдавс</span></div>
         </div>
         <div class="info" id="info">До начала игры осталось 10 секунд</div>
-        <button class="button" onclick="goBack()">Назад</button>
+        <button class="button" id="nextStepButton" style="display:none;">Следующий шаг</button>
+        <button class="button" id="killButton" style="display:none;">Убить</button>
+        <button class="button" id="backButton" onclick="goBack()">Назад</button>
     </div>
 
     <div class="popup" id="popup">
@@ -126,15 +129,32 @@
             youAreWitness = witness === "Islom";
 
             if (youAreKiller) {
-                document.getElementById('info').innerText = "Вы маньяк! Убейте всех, чтобы победить.";
+                document.getElementById('info').innerText = "Вы маньяк! Выберите, кого убить.";
+                document.getElementById('killButton').style.display = 'inline-block';
             } else if (youAreWitness) {
-                document.getElementById('info').innerText = "Вы свидетель! Найдите и убейте маньяка, чтобы победить.";
+                document.getElementById('info').innerText = "Вы свидетель! Вы должны найти и убить маньяка.";
             } else {
                 document.getElementById('info').innerText = "Вы мирный житель. Постарайтесь выжить.";
             }
 
             document.getElementById('nextStepButton').style.display = 'inline-block';
         }
+
+        document.getElementById('killButton').addEventListener('click', function() {
+            document.getElementById('players').childNodes.forEach(player => {
+                player.addEventListener('click', function() {
+                    if (player.id !== "Islom") {
+                        if (player.id === killer) {
+                            document.getElementById('info').innerText = `Вы убили ${killer}. Поздравляем, вы выиграли!`;
+                            showPopup();
+                        } else {
+                            document.getElementById('info').innerText = `Вы убили ${player.id}. К сожалению, это был не маньяк. Вы проиграли.`;
+                            showPopup();
+                        }
+                    }
+                });
+            });
+        });
 
         document.getElementById('nextStepButton').addEventListener('click', function() {
             if (players.length > 2) {
