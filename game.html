@@ -131,7 +131,7 @@
                 document.getElementById('info').innerText = "Вы маньяк! Выберите, кого убить.";
                 document.getElementById('killButton').style.display = 'inline-block';
             } else if (youAreWitness) {
-                document.getElementById('info').innerText = "Вы Киллер! Вы должны найти и убить маньяка.";
+                document.getElementById('info').innerText = "Вы свидетель! Постарайтесь выявить маньяка.";
             } else {
                 document.getElementById('info').innerText = "Вы мирный житель. Постарайтесь выжить.";
             }
@@ -146,10 +146,12 @@
                 return;
             }
 
-            if (killed.id === killer) {
+            if (youAreKiller && killed.id === killer) {
                 document.getElementById('info').innerText = `Вы убили ${killer}. Поздравляем, вы выиграли как маньяк!`;
-            } else {
+            } else if (youAreKiller && killed.id !== killer) {
                 document.getElementById('info').innerText = `Вы убили ${killed.id}. К сожалению, это был не маньяк. Вы проиграли.`;
+            } else {
+                document.getElementById('info').innerText = `Вы не маньяк. Вы проиграли.`;
             }
             showPopup();
         });
