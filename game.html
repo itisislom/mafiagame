@@ -54,17 +54,18 @@
 <body>
     <div class="game-container">
         <div id="players">
-            <div class="player" id="player1"></div>
-            <div class="player" id="player2"></div>
-            <div class="player" id="player3"></div>
-            <div class="player" id="player4"></div>
+            <div class="player" id="Timur">Тимур</div>
+            <div class="player" id="Islom">Ислам</div>
+            <div class="player" id="Sardor">Сардор</div>
+            <div class="player" id="Firdaus">Фирдавс</div>
         </div>
         <div class="info" id="info">Игра начинается...</div>
         <button class="button" id="nextStepButton">Следующий шаг</button>
+        <button class="button" onclick="goBack()">Назад</button>
     </div>
 
     <script>
-        let players = ["player1", "player2", "player3", "player4"];
+        let players = ["Timur", "Islom", "Sardor", "Firdaus"];
         let killer = players[Math.floor(Math.random() * players.length)];
         let witness;
         do {
@@ -94,6 +95,10 @@
                 }
             }
         });
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
