@@ -27,12 +27,23 @@
             background-size: contain;
             margin: 10px;
             display: inline-block;
+            position: relative;
         }
         .player.alive {
             opacity: 1;
         }
         .player.dead {
             opacity: 0.5;
+        }
+        .player span {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #fff;
         }
         .info {
             margin-top: 20px;
@@ -49,30 +60,70 @@
         .button:hover {
             background-color: #555;
         }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #222;
+            padding: 20px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .popup button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #444;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .popup button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div id="players">
-            <div class="player" id="Timur">Тимур</div>
-            <div class="player" id="Islom">Ислам</div>
-            <div class="player" id="Sardor">Сардор</div>
-            <div class="player" id="Firdaus">Фирдавс</div>
+            <div class="player" id="Timur"><span>Тимур</span></div>
+            <div class="player" id="Islom"><span>Ислам</span></div>
+            <div class="player" id="Sardor"><span>Сардор</span></div>
+            <div class="player" id="Firdaus"><span>Фирдавс</span></div>
         </div>
-        <div class="info" id="info">Игра начинается...</div>
-        <button class="button" id="nextStepButton">Следующий шаг</button>
+        <div class="info" id="info">До начала игры осталось 10 секунд</div>
         <button class="button" onclick="goBack()">Назад</button>
+    </div>
+
+    <div class="popup" id="popup">
+        <div id="popup-message"></div>
+        <button onclick="restartGame()">OK</button>
     </div>
 
     <script>
         let players = ["Timur", "Islom", "Sardor", "Firdaus"];
-        let killer = players[Math.floor(Math.random() * players.length)];
-        let witness;
-        do {
-            witness = players[Math.floor(Math.random() * players.length)];
-        } while (witness === killer);
+        let killer, witness;
+        let countdown = 10;
+        let countdownInterval = setInterval(function() {
+            document.getElementById('info').innerText = `До начала игры осталось ${countdown} секунд`;
+            countdown--;
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                startGame();
+            }
+        }, 1000);
 
-        document.getElementById('info').innerText = "Игра началась! Маньяк и свидетель выбраны.";
+        function startGame() {
+            killer = players[Math.floor(Math.random() * players.length)];
+            do {
+                witness = players[Math.floor(Math.random() * players.length)];
+            } while (witness === killer);
+            document.getElementById('info').innerText = "Игра началась! Маньяк и свидетель выбраны.";
+            document.getElementById('nextStepButton').style.display = 'inline-block';
+        }
 
         document.getElementById('nextStepButton').addEventListener('click', function() {
             if (players.length > 2) {
@@ -86,15 +137,25 @@
 
                 if (players.length <= 2) {
                     document.getElementById('info').innerText += " Игра заканчивается!";
-                    if (players.includes(witness)) {
-                        document.getElementById('info').innerText += " Свидетель победил!";
-                    } else {
-                        document.getElementById('info').innerText += " Маньяк победил!";
-                    }
-                    document.getElementById('nextStepButton').disabled = true;
+                    showPopup();
                 }
             }
         });
+
+        function showPopup() {
+            let message;
+            if (players.includes(witness)) {
+                message = "Свидетель победил!";
+            } else {
+                message = "Маньяк победил!";
+            }
+            document.getElementById('popup-message').innerText = message;
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function restartGame() {
+            window.location.href = 'game.html';
+        }
 
         function goBack() {
             window.location.href = 'index.html';
