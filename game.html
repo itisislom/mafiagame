@@ -90,7 +90,7 @@
     <div class="game-container">
         <div id="players">
             <div class="player" id="Timur"><span>Тимур</span></div>
-            <div class="player" id="Islom"><span>Ислам</span></div>
+            <div class="player" id="Islom"><span>Ислам (Вы)</span></div>
             <div class="player" id="Sardor"><span>Сардор</span></div>
             <div class="player" id="Firdaus"><span>Фирдавс</span></div>
         </div>
@@ -105,7 +105,7 @@
 
     <script>
         let players = ["Timur", "Islom", "Sardor", "Firdaus"];
-        let killer, witness;
+        let killer, witness, youAreKiller, youAreWitness;
         let countdown = 10;
         let countdownInterval = setInterval(function() {
             document.getElementById('info').innerText = `До начала игры осталось ${countdown} секунд`;
@@ -121,7 +121,18 @@
             do {
                 witness = players[Math.floor(Math.random() * players.length)];
             } while (witness === killer);
-            document.getElementById('info').innerText = "Игра началась! Маньяк и свидетель выбраны.";
+
+            youAreKiller = killer === "Islom";
+            youAreWitness = witness === "Islom";
+
+            if (youAreKiller) {
+                document.getElementById('info').innerText = "Вы маньяк! Убейте всех, чтобы победить.";
+            } else if (youAreWitness) {
+                document.getElementById('info').innerText = "Вы свидетель! Найдите и убейте маньяка, чтобы победить.";
+            } else {
+                document.getElementById('info').innerText = "Вы мирный житель. Постарайтесь выжить.";
+            }
+
             document.getElementById('nextStepButton').style.display = 'inline-block';
         }
 
@@ -144,7 +155,11 @@
 
         function showPopup() {
             let message;
-            if (players.includes(witness)) {
+            if (youAreWitness && players.includes("Islom")) {
+                message = "Вы победили как свидетель!";
+            } else if (youAreKiller && players.includes("Islom")) {
+                message = "Вы победили как маньяк!";
+            } else if (players.includes(witness)) {
                 message = "Свидетель победил!";
             } else {
                 message = "Маньяк победил!";
